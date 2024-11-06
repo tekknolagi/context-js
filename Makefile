@@ -12,5 +12,6 @@ test.js: compiler.py prospero.vm
 clean:
 	cargo clean
 	rm -rf out
+	rm -f test.js
 
 .PHONY: clean
