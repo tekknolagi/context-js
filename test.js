@@ -16,6 +16,7 @@ class Context {
   neg(a) { return fidget.ctx_neg(this.handle, a); }
   square(a) { return fidget.ctx_square(this.handle, a); }
   sqrt(a) { return fidget.ctx_sqrt(this.handle, a); }
+  deriv(n, v) { return fidget.ctx_deriv(this.handle, n, v); }
   to_graphviz() {
       const offset = fidget.ctx_to_graphviz(this.handle);
       const m = new DataView(fidget.memory.buffer);
@@ -7893,3 +7894,4 @@ const _1eb6 = ctx.max(_1eb4, _1eb5);
 const _1eb7 = ctx.min(_1eaf, _1eb6);
 const _1eb8 = ctx.max(_1ea9, _1eb7);
 const _1eb9 = ctx.min(_1ea3, _1eb8);
+const _foo = ctx.deriv(_1eb9, fidget.var_x());

@@ -1,4 +1,5 @@
 use fidget::context::{Context, Node};
+use fidget::var::Var;
 use std::ffi::CString;
 use std::os::raw::c_char;
 
@@ -6,6 +7,13 @@ use std::os::raw::c_char;
 pub fn new_context() -> Box<Context> {
     Box::new(Context::new())
 }
+
+#[no_mangle]
+pub fn var_x() -> Box<Var> { Box::new(Var::X) }
+#[no_mangle]
+pub fn var_y() -> Box<Var> { Box::new(Var::Y) }
+#[no_mangle]
+pub fn var_z() -> Box<Var> { Box::new(Var::Z) }
 
 #[no_mangle]
 pub fn ctx_x(ctx: &mut Context) -> Node {

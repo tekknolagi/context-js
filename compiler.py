@@ -18,6 +18,7 @@ class Context {
   neg(a) { return fidget.ctx_neg(this.handle, a); }
   square(a) { return fidget.ctx_square(this.handle, a); }
   sqrt(a) { return fidget.ctx_sqrt(this.handle, a); }
+  deriv(n, v) { return fidget.ctx_deriv(this.handle, n, v); }
   to_graphviz() {
       const offset = fidget.ctx_to_graphviz(this.handle);
       const m = new DataView(fidget.memory.buffer);
@@ -44,6 +45,9 @@ for line in open(filename, "r"):
             print(f"const {name} = ctx.y();")
         case "var-z":
             print(f"const {name} = ctx.z();")
+        case "deriv":
+            varname = "fidget.var_" + args[1].split("-")[1] + "()"
+            print(f"const {name} = ctx.deriv({args[0]}, {varname});")
         case _ if op in binary:
             print(f"const {name} = ctx.{op}({args[0]}, {args[1]});")
         case _ if op in unary:
