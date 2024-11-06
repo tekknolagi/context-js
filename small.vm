@@ -1,0 +1,6 @@
+_0 const 2.95
+_1 var-x
+_2 const 8.13008
+_3 mul _1 _2
+_4 add _0 _3
+_d deriv _4 x

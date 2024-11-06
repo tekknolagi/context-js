@@ -1,6 +1,4 @@
-import sys
-filename = sys.argv[1]
-print("""import pkg from './out/context_js.js';
+import pkg from './out/context_js.js';
 const fidget = pkg.__wasm;
 function c_string(buffer, offset) {
   const m = new DataView(buffer);
@@ -32,27 +30,10 @@ class Context {
       return c_string(fidget.memory.buffer, offset);
   }
 }
-const ctx = new Context();""")
-binary = ["add", "sub", "mul", "max", "min"]
-unary = ["neg", "square", "sqrt"]
-for line in open(filename, "r"):
-    if line.startswith("#"):
-        continue
-    name, op, *args = line.split()
-    match op:
-        case "const":
-            print(f"const {name} = ctx.constant({args[0]});")
-        case "var-x":
-            print(f"const {name} = ctx.x();")
-        case "var-y":
-            print(f"const {name} = ctx.y();")
-        case "var-z":
-            print(f"const {name} = ctx.z();")
-        case "deriv":
-            print(f"const {name} = ctx.deriv({args[0]}, fidget.var_{args[1]}());")
-        case _ if op in binary:
-            print(f"const {name} = ctx.{op}({args[0]}, {args[1]});")
-        case _ if op in unary:
-            print(f"const {name} = ctx.{op}({args[0]});")
-        case _:
-            raise ValueError(f"Unknown opcode: {op}")
+const ctx = new Context();
+const _0 = ctx.constant(2.95);
+const _1 = ctx.x();
+const _2 = ctx.constant(8.13008);
+const _3 = ctx.mul(_1, _2);
+const _4 = ctx.add(_0, _3);
+const _d = ctx.deriv(_4, fidget.var_x());
