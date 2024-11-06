@@ -71,6 +71,11 @@ pub fn ctx_sqrt(ctx: &mut Context, a: Node) -> Node {
 }
 
 #[no_mangle]
+pub fn ctx_deriv(ctx: &mut Context, node: Node, var: Box<Var>) -> Node {
+    ctx.deriv(node, *var).unwrap()
+}
+
+#[no_mangle]
 pub fn ctx_to_graphviz(ctx: &mut Context) -> *mut c_char {
     let result = ctx.dot();
     CString::new(result).unwrap().into_raw()
