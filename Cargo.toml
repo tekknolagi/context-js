@@ -1,0 +1,11 @@
+[package]
+name = "context-js"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+fidget = { version = "0.3.3", features = [] }
+
+[lib]
+path = "src/lib.rs"
+crate-type = ["cdylib"]
