@@ -36,4 +36,4 @@ const _1 = ctx.x();
 const _2 = ctx.constant(8.13008);
 const _3 = ctx.mul(_1, _2);
 const _4 = ctx.add(_0, _3);
-const _d = ctx.deriv(_4, fidget.var_x());
+const _d = ctx.deriv(_4, fidget.VAR_X);

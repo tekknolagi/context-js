@@ -3,17 +3,14 @@ use fidget::var::Var;
 use std::ffi::CString;
 use std::os::raw::c_char;
 
+pub const VAR_X: &Var = &Var::X;
+pub const VAR_Y: &Var = &Var::Y;
+pub const VAR_Z: &Var = &Var::Z;
+
 #[no_mangle]
 pub fn new_context() -> Box<Context> {
     Box::new(Context::new())
 }
-
-#[no_mangle]
-pub fn var_x() -> Box<Var> { Box::new(Var::X) }
-#[no_mangle]
-pub fn var_y() -> Box<Var> { Box::new(Var::Y) }
-#[no_mangle]
-pub fn var_z() -> Box<Var> { Box::new(Var::Z) }
 
 #[no_mangle]
 pub fn ctx_x(ctx: &mut Context) -> Node {
@@ -71,7 +68,7 @@ pub fn ctx_sqrt(ctx: &mut Context, a: Node) -> Node {
 }
 
 #[no_mangle]
-pub fn ctx_deriv(ctx: &mut Context, node: Node, var: Box<Var>) -> Node {
+pub fn ctx_deriv(ctx: &mut Context, node: Node, var: &Var) -> Node {
     ctx.deriv(node, *var).unwrap()
 }
 

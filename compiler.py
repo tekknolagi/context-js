@@ -49,7 +49,8 @@ for line in open(filename, "r"):
         case "var-z":
             print(f"const {name} = ctx.z();")
         case "deriv":
-            print(f"const {name} = ctx.deriv({args[0]}, fidget.var_{args[1]}());")
+            varname = f"var_{args[1]}".upper()
+            print(f"const {name} = ctx.deriv({args[0]}, fidget.{varname});")
         case _ if op in binary:
             print(f"const {name} = ctx.{op}({args[0]}, {args[1]});")
         case _ if op in unary:
