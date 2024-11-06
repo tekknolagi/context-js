@@ -1,4 +1,6 @@
 use fidget::context::{Context, Node};
+use std::ffi::CString;
+use std::os::raw::c_char;
 
 #[no_mangle]
 pub fn new_context() -> Box<Context> {
@@ -58,4 +60,10 @@ pub fn ctx_square(ctx: &mut Context, a: Node) -> Node {
 #[no_mangle]
 pub fn ctx_sqrt(ctx: &mut Context, a: Node) -> Node {
     ctx.sqrt(a).unwrap()
+}
+
+#[no_mangle]
+pub fn ctx_to_graphviz(ctx: &mut Context) -> *mut c_char {
+    let result = ctx.dot();
+    CString::new(result).unwrap().into_raw()
 }

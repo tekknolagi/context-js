@@ -18,6 +18,15 @@ class Context {
   neg(a) { return fidget.ctx_neg(this.handle, a); }
   square(a) { return fidget.ctx_square(this.handle, a); }
   sqrt(a) { return fidget.ctx_sqrt(this.handle, a); }
+  to_graphviz() {
+      const offset = fidget.ctx_to_graphviz(this.handle);
+      const m = new DataView(fidget.memory.buffer);
+      let result = "";
+      for (let i = 0; m.getUint8(offset + i) !== 0; i++) {
+        result += String.fromCharCode(m.getUint8(offset + i));
+      }
+      return result;
+  }
 }
 const ctx = new Context();""")
 binary = ["add", "sub", "mul", "max", "min"]
