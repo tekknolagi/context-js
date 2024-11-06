@@ -1,5 +1,13 @@
 import pkg from './out/context_js.js';
 const fidget = pkg.__wasm;
+function c_string(buffer, offset) {
+  const m = new DataView(buffer);
+  let result = "";
+  for (let i = 0; m.getUint8(offset + i) !== 0; i++) {
+    result += String.fromCharCode(m.getUint8(offset + i));
+  }
+  return result;
+}
 class Context {
   constructor() {
     this.handle = fidget.new_context();
@@ -19,12 +27,7 @@ class Context {
   deriv(n, v) { return fidget.ctx_deriv(this.handle, n, v); }
   to_graphviz() {
       const offset = fidget.ctx_to_graphviz(this.handle);
-      const m = new DataView(fidget.memory.buffer);
-      let result = "";
-      for (let i = 0; m.getUint8(offset + i) !== 0; i++) {
-        result += String.fromCharCode(m.getUint8(offset + i));
-      }
-      return result;
+      return c_string(fidget.memory.buffer, offset);
   }
 }
 const ctx = new Context();
