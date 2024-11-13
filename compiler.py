@@ -32,12 +32,12 @@ for line in open(filename, "r"):
             raise ValueError(f"Unknown opcode: {op}")
     # print(f"console.log(\"{name}\", ctx.eval({name}));")
 assert last is not None, "Empty file"
-print("const size = 256;")
-print(f"const rgbas = ctx.render({last}, size);")
 print("""\
 const canvas = document.getElementById('canvas');
-canvas.width = size;
-canvas.height = size;
+const size = canvas.width;  // assumed square
+""")
+print(f"const rgbas = ctx.render({last}, size);")
+print("""\
 const ctx2d = canvas.getContext('2d');
 ctx2d.putImageData(new ImageData(new Uint8ClampedArray(rgbas), size, size), 0, 0);
 """)
