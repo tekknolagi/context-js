@@ -1,6 +1,6 @@
 import sys
 filename = sys.argv[1]
-print("""import {initSync, Context} from './out/context_js.js';
+print("""import {initSync, Context} from './context_js.js';
 const module = await WebAssembly.compileStreaming(fetch("out/context_js_bg.wasm"));
 initSync(module);
 const ctx = new Context();""")
