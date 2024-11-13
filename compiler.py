@@ -35,9 +35,12 @@ assert last is not None, "Empty file"
 print("""\
 const canvas = document.getElementById('canvas');
 const size = canvas.width;  // assumed square
+const ms_before = performance.now();
 """)
 print(f"const rgbas = ctx.render({last}, size);")
 print("""\
+const ms_after = performance.now();
+console.log("Took", ms_after - ms_before, "ms to render");
 const ctx2d = canvas.getContext('2d');
 ctx2d.putImageData(new ImageData(new Uint8ClampedArray(rgbas), size, size), 0, 0);
 """)
