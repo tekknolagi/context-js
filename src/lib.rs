@@ -13,9 +13,7 @@ pub struct Node {
 
 impl From<fidget::context::Node> for Node {
     fn from(inner: fidget::context::Node) -> Self {
-        Self {
-            inner: inner.into(),
-        }
+        Self { inner }
     }
 }
 
@@ -35,7 +33,7 @@ impl Context {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         Self {
-            inner: fidget::context::Context::new().into(),
+            inner: fidget::context::Context::new(),
         }
     }
 
