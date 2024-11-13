@@ -70,6 +70,11 @@ pub fn ctx_deriv(ctx: &mut Context, node: Node, var: &Var) -> Node {
 }
 
 #[no_mangle]
+pub fn ctx_eval(ctx: &mut Context, node: Node) -> f64 {
+    ctx.eval_xyz(node, 0.0, 0.0, 0.0).unwrap()
+}
+
+#[no_mangle]
 pub fn ctx_to_graphviz(ctx: &mut Context) -> *mut c_char {
     let result = ctx.dot();
     // TODO(max): Add an API to free this later because right now it leaks

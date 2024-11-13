@@ -27,6 +27,7 @@ class Context {
   square(a) { return fidget.ctx_square(this.handle, a); }
   sqrt(a) { return fidget.ctx_sqrt(this.handle, a); }
   deriv(n, v) { return fidget.ctx_deriv(this.handle, n, v); }
+  eval(node) { return fidget.ctx_eval(this.handle, node); }
   render(root) {
     if (root === null || root === undefined) {
       throw new Error("No nodes to render");

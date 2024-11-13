@@ -25,6 +25,15 @@ class Context {
   square(a) { return fidget.ctx_square(this.handle, a); }
   sqrt(a) { return fidget.ctx_sqrt(this.handle, a); }
   deriv(n, v) { return fidget.ctx_deriv(this.handle, n, v); }
+  eval(node) { return fidget.ctx_eval(this.handle, node); }
+  render(root) {
+    if (root === null || root === undefined) {
+      throw new Error("No nodes to render");
+    }
+    // TODO(max): Fix bindings; need to pass in array or something to actually
+    // return Bytes
+    return fidget.ctx_render(this.handle, root);
+  }
   to_graphviz() {
       const offset = fidget.ctx_to_graphviz(this.handle);
       return c_string(fidget.memory.buffer, offset);
