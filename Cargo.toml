@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 fidget = { version = "0.3.3", features = [] }
+wasm-bindgen = "0.2.95"
 
 [lib]
 path = "src/lib.rs"

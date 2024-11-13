@@ -1,46 +1,8 @@
 import sys
 filename = sys.argv[1]
-print("""import pkg from './out/context_js.js';
-const fidget = pkg.__wasm;
-function c_string(buffer, offset) {
-  const m = new DataView(buffer);
-  let result = "";
-  for (let i = 0; m.getUint8(offset + i) !== 0; i++) {
-    result += String.fromCharCode(m.getUint8(offset + i));
-  }
-  return result;
-}
-class Context {
-  constructor() {
-    this.handle = fidget.new_context();
-  }
-  constant(a) { return fidget.ctx_constant(this.handle, a); }
-  x() { return fidget.ctx_x(this.handle); }
-  y() { return fidget.ctx_y(this.handle); }
-  z() { return fidget.ctx_z(this.handle); }
-  add(a, b) { return fidget.ctx_add(this.handle, a, b); }
-  sub(a, b) { return fidget.ctx_sub(this.handle, a, b); }
-  mul(a, b) { return fidget.ctx_mul(this.handle, a, b); }
-  max(a, b) { return fidget.ctx_max(this.handle, a, b); }
-  min(a, b) { return fidget.ctx_min(this.handle, a, b); }
-  neg(a) { return fidget.ctx_neg(this.handle, a); }
-  square(a) { return fidget.ctx_square(this.handle, a); }
-  sqrt(a) { return fidget.ctx_sqrt(this.handle, a); }
-  deriv(n, v) { return fidget.ctx_deriv(this.handle, n, v); }
-  eval(node) { return fidget.ctx_eval(this.handle, node); }
-  render(root) {
-    if (root === null || root === undefined) {
-      throw new Error("No nodes to render");
-    }
-    // TODO(max): Fix bindings; need to pass in array or something to actually
-    // return Bytes
-    return fidget.ctx_render(this.handle, root);
-  }
-  to_graphviz() {
-      const offset = fidget.ctx_to_graphviz(this.handle);
-      return c_string(fidget.memory.buffer, offset);
-  }
-}
+print("""import {initSync, Context} from './out/context_js.js';
+const module = await WebAssembly.compileStreaming(fetch("out/context_js_bg.wasm"));
+initSync(module);
 const ctx = new Context();""")
 binary = ["add", "sub", "mul", "max", "min"]
 unary = ["neg", "square", "sqrt"]
@@ -70,5 +32,12 @@ for line in open(filename, "r"):
             raise ValueError(f"Unknown opcode: {op}")
     # print(f"console.log(\"{name}\", ctx.eval({name}));")
 assert last is not None, "Empty file"
-# print(f"console.log({last});")
-print(f"console.log(ctx.render({last}));")
+print("const size = 256;")
+print(f"const rgbas = ctx.render({last}, size);")
+print("""\
+const canvas = document.getElementById('canvas');
+canvas.width = size;
+canvas.height = size;
+const ctx2d = canvas.getContext('2d');
+ctx2d.putImageData(new ImageData(new Uint8ClampedArray(rgbas), size, size), 0, 0);
+""")

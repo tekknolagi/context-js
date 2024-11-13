@@ -1,110 +1,121 @@
-use fidget::context::{Context, Node};
 use fidget::shape::RenderHints;
-use fidget::var::Var;
-use std::ffi::CString;
-use std::os::raw::c_char;
+use wasm_bindgen::prelude::*;
 
-#[no_mangle]
-pub fn new_context() -> Box<Context> {
-    Box::new(Context::new())
+#[wasm_bindgen]
+pub struct Context {
+    inner: fidget::context::Context,
 }
 
-#[no_mangle]
-pub fn ctx_x(ctx: &mut Context) -> Node {
-    ctx.x()
+#[wasm_bindgen]
+pub struct Node {
+    inner: fidget::context::Node,
 }
 
-#[no_mangle]
-pub fn ctx_y(ctx: &mut Context) -> Node {
-    ctx.y()
+impl From<fidget::context::Node> for Node {
+    fn from(inner: fidget::context::Node) -> Self {
+        Self {
+            inner: inner.into(),
+        }
+    }
 }
 
-#[no_mangle]
-pub fn ctx_constant(ctx: &mut Context, val: f64) -> Node {
-    ctx.constant(val)
+impl Node {
+    pub fn get(&self) -> fidget::context::Node {
+        self.inner
+    }
 }
 
-#[no_mangle]
-pub fn ctx_add(ctx: &mut Context, a: Node, b: Node) -> Node {
-    ctx.add(a, b).unwrap()
+#[wasm_bindgen]
+pub struct Var {
+    inner: fidget::var::Var,
 }
 
-#[no_mangle]
-pub fn ctx_sub(ctx: &mut Context, a: Node, b: Node) -> Node {
-    ctx.sub(a, b).unwrap()
-}
+#[wasm_bindgen]
+impl Context {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self {
+            inner: fidget::context::Context::new().into(),
+        }
+    }
 
-#[no_mangle]
-pub fn ctx_mul(ctx: &mut Context, a: Node, b: Node) -> Node {
-    ctx.mul(a, b).unwrap()
-}
+    pub fn x(&mut self) -> Node {
+        self.inner.x().into()
+    }
 
-#[no_mangle]
-pub fn ctx_neg(ctx: &mut Context, a: Node) -> Node {
-    ctx.neg(a).unwrap()
-}
+    pub fn y(&mut self) -> Node {
+        self.inner.y().into()
+    }
 
-#[no_mangle]
-pub fn ctx_max(ctx: &mut Context, a: Node, b: Node) -> Node {
-    ctx.max(a, b).unwrap()
-}
+    pub fn z(&mut self) -> Node {
+        self.inner.z().into()
+    }
 
-#[no_mangle]
-pub fn ctx_min(ctx: &mut Context, a: Node, b: Node) -> Node {
-    ctx.min(a, b).unwrap()
-}
+    pub fn constant(&mut self, val: f64) -> Node {
+        self.inner.constant(val).into()
+    }
 
-#[no_mangle]
-pub fn ctx_square(ctx: &mut Context, a: Node) -> Node {
-    ctx.square(a).unwrap()
-}
+    pub fn deriv(&mut self, node: &Node, var: Var) -> Node {
+        self.inner.deriv(node.inner, var.inner).unwrap().into()
+    }
 
-#[no_mangle]
-pub fn ctx_sqrt(ctx: &mut Context, a: Node) -> Node {
-    ctx.sqrt(a).unwrap()
-}
+    pub fn eval(&mut self, node: &Node) -> f64 {
+        self.inner.eval_xyz(node.inner, 0.0, 0.0, 0.0).unwrap()
+    }
 
-#[no_mangle]
-pub fn ctx_deriv(ctx: &mut Context, node: Node, var: &Var) -> Node {
-    ctx.deriv(node, *var).unwrap()
-}
+    pub fn dot(&mut self) -> String {
+        self.inner.dot()
+    }
 
-#[no_mangle]
-pub fn ctx_eval(ctx: &mut Context, node: Node) -> f64 {
-    ctx.eval_xyz(node, 0.0, 0.0, 0.0).unwrap()
-}
+    pub fn render(&mut self, root: &Node, size: usize) -> Vec<u8> {
+        let shape_vm = fidget::vm::VmShape::new(&self.inner, root.inner).unwrap();
+        let cfg = fidget::render::RenderConfig {
+            image_size: size,
+            tile_sizes: fidget::vm::VmFunction::tile_sizes_2d().to_vec(),
+            ..Default::default()
+        };
+        let rgbs = fidget::render::render2d::<_, fidget::render::BitRenderMode>(shape_vm, &cfg);
+        rgbs.iter()
+            .flat_map(|b| {
+                let b = *b as u8 * u8::MAX;
+                [b, b, b, 255]
+            })
+            .collect::<Vec<u8>>()
+    }
 
-#[no_mangle]
-pub fn ctx_to_graphviz(ctx: &mut Context) -> *mut c_char {
-    let result = ctx.dot();
-    // TODO(max): Add an API to free this later because right now it leaks
-    CString::new(result).unwrap().into_raw()
-}
+    // Unary
 
-pub struct Bytes {
-    pub data: *mut u8,
-    pub size: usize,
-}
+    pub fn neg(&mut self, a: &Node) -> Node {
+        self.inner.neg(a.inner).unwrap().into()
+    }
 
-#[no_mangle]
-pub fn ctx_render(ctx: &mut Context, root: Node) -> *mut u8 {
-    let shape_vm = fidget::vm::VmShape::new(&ctx, root).unwrap();
-    let size = 1024;
-    let cfg = fidget::render::RenderConfig {
-        image_size: size,
-        tile_sizes: fidget::vm::VmFunction::tile_sizes_2d().to_vec(),
-        ..Default::default()
-    };
-    // let tape = shape_vm.clone();
-    let rgbs = fidget::render::render2d::<
-        _,
-        fidget::render::SdfPixelRenderMode,
-    >(shape_vm, &cfg);
-    let mut rgbas = rgbs.iter().flat_map(|rgb| [rgb[0], rgb[1], rgb[2], 255]).collect::<Vec<u8>>();
-    let data = rgbas.as_mut_ptr();
-    let size = rgbas.len();
-    // TODO(max): Add an API to free this later because right now it leaks
-    std::mem::forget(rgbas);
-    // Bytes { data, size }
-    data
+    pub fn square(&mut self, a: &Node) -> Node {
+        self.inner.square(a.inner).unwrap().into()
+    }
+
+    pub fn sqrt(&mut self, a: &Node) -> Node {
+        self.inner.sqrt(a.inner).unwrap().into()
+    }
+
+    // Binary
+
+    pub fn add(&mut self, a: &Node, b: &Node) -> Node {
+        self.inner.add(a.inner, b.inner).unwrap().into()
+    }
+
+    pub fn sub(&mut self, a: &Node, b: &Node) -> Node {
+        self.inner.sub(a.inner, b.inner).unwrap().into()
+    }
+
+    pub fn mul(&mut self, a: &Node, b: &Node) -> Node {
+        self.inner.mul(a.inner, b.inner).unwrap().into()
+    }
+
+    pub fn max(&mut self, a: &Node, b: &Node) -> Node {
+        self.inner.max(a.inner, b.inner).unwrap().into()
+    }
+
+    pub fn min(&mut self, a: &Node, b: &Node) -> Node {
+        self.inner.min(a.inner, b.inner).unwrap().into()
+    }
 }
