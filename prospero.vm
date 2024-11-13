@@ -7865,4 +7865,3 @@ _1eb6 max _1eb4 _1eb5
 _1eb7 min _1eaf _1eb6
 _1eb8 max _1ea9 _1eb7
 _1eb9 min _1ea3 _1eb8
-_foo deriv _1eb9 var-x

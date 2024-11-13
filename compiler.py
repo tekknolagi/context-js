@@ -27,6 +27,14 @@ class Context {
   square(a) { return fidget.ctx_square(this.handle, a); }
   sqrt(a) { return fidget.ctx_sqrt(this.handle, a); }
   deriv(n, v) { return fidget.ctx_deriv(this.handle, n, v); }
+  render(root) {
+    if (root === null || root === undefined) {
+      throw new Error("No nodes to render");
+    }
+    // TODO(max): Fix bindings; need to pass in array or something to actually
+    // return Bytes
+    return fidget.ctx_render(this.handle, root);
+  }
   to_graphviz() {
       const offset = fidget.ctx_to_graphviz(this.handle);
       return c_string(fidget.memory.buffer, offset);
@@ -35,10 +43,12 @@ class Context {
 const ctx = new Context();""")
 binary = ["add", "sub", "mul", "max", "min"]
 unary = ["neg", "square", "sqrt"]
+last = None
 for line in open(filename, "r"):
     if line.startswith("#"):
         continue
     name, op, *args = line.split()
+    last = name
     match op:
         case "const":
             print(f"const {name} = ctx.constant({args[0]});")
@@ -57,3 +67,7 @@ for line in open(filename, "r"):
             print(f"const {name} = ctx.{op}({args[0]});")
         case _:
             raise ValueError(f"Unknown opcode: {op}")
+    # print(f"console.log(\"{name}\", ctx.eval({name}));")
+assert last is not None, "Empty file"
+# print(f"console.log({last});")
+print(f"console.log(ctx.render({last}));")
