@@ -18,7 +18,7 @@ export class Context {
   /**
    * @returns {Node}
    */
-  var(): Node;
+  variable(): Node;
   /**
    * @param {number} val
    * @returns {Node}
@@ -109,7 +109,7 @@ export interface InitOutput {
   readonly context_x: (a: number) => number;
   readonly context_y: (a: number) => number;
   readonly context_z: (a: number) => number;
-  readonly context_var: (a: number) => number;
+  readonly context_variable: (a: number) => number;
   readonly context_constant: (a: number, b: number) => number;
   readonly context_deriv: (a: number, b: number, c: number) => number;
   readonly context_eval: (a: number, b: number) => number;

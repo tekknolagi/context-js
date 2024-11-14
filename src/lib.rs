@@ -49,7 +49,7 @@ impl Context {
         self.inner.z().into()
     }
 
-    pub fn var(&mut self) -> Node {
+    pub fn variable(&mut self) -> Node {
         self.inner.var(fidget::var::Var::new()).into()
     }
 
@@ -76,11 +76,10 @@ impl Context {
             tile_sizes: fidget::vm::VmFunction::tile_sizes_2d().to_vec(),
             ..Default::default()
         };
-        let rgbs = fidget::render::render2d::<_, fidget::render::BitRenderMode>(shape_vm, &cfg);
+        let rgbs = fidget::render::render2d::<_, fidget::render::SdfRenderMode>(shape_vm, &cfg);
         rgbs.iter()
-            .flat_map(|b| {
-                let b = *b as u8 * u8::MAX;
-                [b, b, b, 255]
+            .flat_map(|p| {
+                [p[0], p[1], p[2], 255]
             })
             .collect::<Vec<u8>>()
     }

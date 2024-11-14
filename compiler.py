@@ -22,6 +22,8 @@ for line in open(filename, "r"):
             print(f"const {name} = ctx.y();")
         case "var-z":
             print(f"const {name} = ctx.z();")
+        case "var":
+            print(f"const {name} = ctx.variable();")
         case "deriv":
             varname = f"var_{args[1]}".upper()
             print(f"const {name} = ctx.deriv({args[0]}, fidget.{varname});")

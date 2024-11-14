@@ -123,8 +123,8 @@ export class Context {
     /**
      * @returns {Node}
      */
-    var() {
-        const ret = wasm.context_var(this.__wbg_ptr);
+    variable() {
+        const ret = wasm.context_variable(this.__wbg_ptr);
         return Node.__wrap(ret);
     }
     /**

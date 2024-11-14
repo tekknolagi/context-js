@@ -8,7 +8,7 @@ export function context_new(): number;
 export function context_x(a: number): number;
 export function context_y(a: number): number;
 export function context_z(a: number): number;
-export function context_var(a: number): number;
+export function context_variable(a: number): number;
 export function context_constant(a: number, b: number): number;
 export function context_deriv(a: number, b: number, c: number): number;
 export function context_eval(a: number, b: number): number;
