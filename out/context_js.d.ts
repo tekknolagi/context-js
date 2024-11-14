@@ -16,6 +16,10 @@ export class Context {
    */
   z(): Node;
   /**
+   * @returns {Node}
+   */
+  var(): Node;
+  /**
    * @param {number} val
    * @returns {Node}
    */
@@ -105,6 +109,7 @@ export interface InitOutput {
   readonly context_x: (a: number) => number;
   readonly context_y: (a: number) => number;
   readonly context_z: (a: number) => number;
+  readonly context_var: (a: number) => number;
   readonly context_constant: (a: number, b: number) => number;
   readonly context_deriv: (a: number, b: number, c: number) => number;
   readonly context_eval: (a: number, b: number) => number;
@@ -120,6 +125,7 @@ export interface InitOutput {
   readonly context_min: (a: number, b: number, c: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_exn_store: (a: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;

@@ -49,6 +49,10 @@ impl Context {
         self.inner.z().into()
     }
 
+    pub fn var(&mut self) -> Node {
+        self.inner.var(fidget::var::Var::new()).into()
+    }
+
     pub fn constant(&mut self, val: f64) -> Node {
         self.inner.constant(val).into()
     }
