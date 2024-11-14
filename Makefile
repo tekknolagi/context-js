@@ -1,4 +1,4 @@
-all: out/small.js out/prospero.js
+all: out/small.js out/prospero.js out/quarter.js
 
 target/wasm32-unknown-unknown/release/context_js.wasm: src/lib.rs
 	cargo build --target wasm32-unknown-unknown --release
