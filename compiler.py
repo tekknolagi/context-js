@@ -8,7 +8,8 @@ binary = ["add", "sub", "mul", "max", "min"]
 unary = ["neg", "square", "sqrt"]
 last = None
 for line in open(filename, "r"):
-    if line.startswith("#"):
+    line = line.strip()
+    if not line or line.startswith("#"):
         continue
     name, op, *args = line.split()
     last = name
